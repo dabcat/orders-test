@@ -1,3 +1,24 @@
-<p>
-  payment-details works!
-</p>
+<h5>
+  Showing transaction details for orderId: <strong>{{transactionId}}</strong>
+</h5>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#transactionId</th>
+      <th scope="col">isExact</th>
+      <th scope="col">isEmailMatched</th>
+      <th scope="col">isAmountMatched</th>
+      <th scope="col">referenceIdStatus</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of transactions$ | async">
+      <td>{{item.transactionId}}</td>
+      <td><span class="oi" [ngClass]="item.match.isExact ? 'oi-circle-check true' : 'oi-circle-x false'"></span></td>
+      <td><span class="oi" [ngClass]="item.match.details.isEmailMatched ? 'oi-circle-check true' : 'oi-circle-x false'"></span></td>
+      <td><span class="oi" [ngClass]="item.match.details.isAmountMatched ? 'oi-circle-check true' : 'oi-circle-x false'"></span></td>
+      <td>{{item.match.details.referenceIdStatus}}</td>
+    </tr>
+  </tbody>
+</table>

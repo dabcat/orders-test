@@ -20,18 +20,21 @@ export class ApiService {
     this.basePath = environment.apiBasePath;
   }
 
-  getOrders(): Observable<Order> {
-    return this.http.get(this.basePath + '/orders', HTTP_OPTIONS)
+  getOrders(filter?: Array<any>): Observable<Order> {
+    const filters = this.handleFilters(filter);
+    return this.http.get(this.basePath + `/orders${filters}`, HTTP_OPTIONS)
     .map((res: any) => this.handleResults(res))
   }
 
-  getTransactions(): Observable<Transaction> {
-    return this.http.get(this.basePath + '/transactions', HTTP_OPTIONS)
+  getTransactions(filter?: Array<any>): Observable<Transaction> {
+    const filters = this.handleFilters(filter);
+    return this.http.get(this.basePath + `/transactions${filters}`, HTTP_OPTIONS)
     .map((res: any) => this.handleResults(res))
   }
 
-  getPayments(): Observable<Payment> {
-    return this.http.get(this.basePath + '/payments', HTTP_OPTIONS)
+  getPayments(filter?: Array<any>): Observable<Payment> {
+    const filters = this.handleFilters(filter);
+    return this.http.get(this.basePath + `/payments${filters}`, HTTP_OPTIONS)
       .map((res: any) => this.handleResults(res))
   }
 
@@ -41,6 +44,18 @@ export class ApiService {
     } else {
       return response.result ? response.result : [];
     }
+  }
+
+  handleFilters(filter?: Array<any>) {
+    let params = '';
+    if(filter && filter.length >= 1){ 
+      filter.map((item, index) => {
+        if(index === 0) params = params.concat('?');
+        params = params.concat(`${item.name}=${item.value}&`)
+      });
+      params = params.slice(0, -1);
+    }
+    return params;
   }
 
 }

@@ -1,21 +1,26 @@
- 
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col"><input [(ngModel)]="searchQuery" placeholder="Email" class="form-control"></th>
-        <th scope="col">Amount</th>
-        <th scope="col">Project</th>
-        <th scope="col">Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of orders$ | async | search:'email':searchQuery">
-        <td>{{item.referenceId}}</td>
-        <td>{{item.email}}</td>
-        <td>{{item.amount | currency}}</td>
-        <td>{{item.project}}</td>
-        <td>{{item.creationDate | date}}</td>
-      </tr>
-    </tbody>
-  </table>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">
+        <input [(ngModel)]="searchQuery" placeholder="Email" class="form-control form-control-sm">
+      </th>
+      <th scope="col">Amount</th>
+      <th scope="col">Matched Order</th>
+      <th scope="col">Project</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of matchedTransactions$ | async | search:'email':searchQuery">
+      <td>
+        <a href="" [routerLink]="['/transactions', item._id]">{{item._id}}</a>
+      </td>
+      <td>{{item.email}}</td>
+      <td>{{item.amount | currency}}</td>
+      <td><span class="oi" [ngClass]="item.payment ? 'oi-circle-check true' : 'oi-circle-x false'"></span></td>
+      <td>{{item.project}}</td>
+      <td>{{item.creationDate | date}}</td>
+    </tr>
+  </tbody>
+</table>
