@@ -14,16 +14,12 @@ import { Subject } from 'rxjs/Subject';
   styleUrls: ['./orders.component.scss']
 })
 export class OrdersComponent implements OnInit {
-  orders$: Observable<Order>;
-  payments$: Observable<Payment>;
-  matchedTransactions$: Subject<any> = new BehaviorSubject<any>(null)
+  matchedTransactions$: Subject<Order> = new BehaviorSubject<Order>(null)
   searchQuery: string = '';
 
   constructor(private api: ApiService) { }
 
   ngOnInit() {
-    // this.orders$ = this.api.getOrders()
-    // this.payments$ = this.api.getPayments();
 
     forkJoin(this.api.getOrders(), this.api.getPayments()).subscribe(([orders, payments]) => {
       const results = this.buildResults(orders, payments);

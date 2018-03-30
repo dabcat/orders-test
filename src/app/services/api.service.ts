@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
+import { of }         from 'rxjs/observable/of';
+import { catchError, map } from 'rxjs/operators';
+
 import { Order } from '../models/order';
 import { Transaction } from '../models/transaction';
 import { Payment } from '../models/payment';
@@ -22,31 +24,33 @@ export class ApiService {
 
   getOrders(filter?: Array<any>): Observable<Order> {
     const filters = this.handleFilters(filter);
-    return this.http.get(this.basePath + `/orders${filters}`, HTTP_OPTIONS)
-    .map((res: any) => this.handleResults(res))
+    return this.http.get(this.basePath + `/orders${filters}`, HTTP_OPTIONS).pipe(
+      map((res: any) => this.handleResults(res)),
+      catchError(this.handleError('getOrders', []))
+    )
   }
 
   getTransactions(filter?: Array<any>): Observable<Transaction> {
     const filters = this.handleFilters(filter);
-    return this.http.get(this.basePath + `/transactions${filters}`, HTTP_OPTIONS)
-    .map((res: any) => this.handleResults(res))
+    return this.http.get(this.basePath + `/transactions${filters}`, HTTP_OPTIONS).pipe(
+      map((res: any) => this.handleResults(res)),
+      catchError(this.handleError('getTransactions', []))
+    )
   }
 
   getPayments(filter?: Array<any>): Observable<Payment> {
     const filters = this.handleFilters(filter);
-    return this.http.get(this.basePath + `/payments${filters}`, HTTP_OPTIONS)
-      .map((res: any) => this.handleResults(res))
+    return this.http.get(this.basePath + `/payments${filters}`, HTTP_OPTIONS).pipe(
+      map((res: any) => this.handleResults(res)),
+      catchError(this.handleError('getPayments', []))
+    )
   }
 
-  handleResults(response:any) {
-    if(!response.status) {
-      throw new Error('This request has failed ' + response.status);
-    } else {
-      return response.result ? response.result : [];
-    }
+  private handleResults(response:any) {
+    return response.result ? response.result : [];
   }
 
-  handleFilters(filter?: Array<any>) {
+  private handleFilters(filter?: Array<any>) {
     let params = '';
     if(filter && filter.length >= 1){ 
       filter.map((item, index) => {
@@ -56,6 +60,14 @@ export class ApiService {
       params = params.slice(0, -1);
     }
     return params;
+  }
+
+  private handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(operation, error);
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
   }
 
 }
