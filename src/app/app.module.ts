@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { OrdersModule } from './orders/orders.module';
-import { TransactionsModule } from './transactions/transactions.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ApiService } from './services/api.service';
