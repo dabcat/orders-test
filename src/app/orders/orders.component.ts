@@ -20,7 +20,7 @@ export class OrdersComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit() {
-
+    // concurent http calls to get both orders and payments for matching
     forkJoin(this.api.getOrders(), this.api.getPayments()).subscribe(([orders, payments]) => {
       const results = this.buildResults(orders, payments);
       this.matchedTransactions$.next(results);

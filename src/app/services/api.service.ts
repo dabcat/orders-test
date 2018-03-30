@@ -9,6 +9,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Order } from '../models/order';
 import { Transaction } from '../models/transaction';
 import { Payment } from '../models/payment';
+import { ApiFilter } from '../models/api-filter';
 
 const HTTP_OPTIONS = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -22,7 +23,7 @@ export class ApiService {
     this.basePath = environment.apiBasePath;
   }
 
-  getOrders(filter?: Array<any>): Observable<Order> {
+  getOrders(filter?: Array<ApiFilter>): Observable<Order> {
     const filters = this.handleFilters(filter);
     return this.http.get(this.basePath + `/orders${filters}`, HTTP_OPTIONS).pipe(
       map((res: any) => this.handleResults(res)),
@@ -30,7 +31,7 @@ export class ApiService {
     )
   }
 
-  getTransactions(filter?: Array<any>): Observable<Transaction> {
+  getTransactions(filter?: Array<ApiFilter>): Observable<Transaction> {
     const filters = this.handleFilters(filter);
     return this.http.get(this.basePath + `/transactions${filters}`, HTTP_OPTIONS).pipe(
       map((res: any) => this.handleResults(res)),
@@ -38,7 +39,7 @@ export class ApiService {
     )
   }
 
-  getPayments(filter?: Array<any>): Observable<Payment> {
+  getPayments(filter?: Array<ApiFilter>): Observable<Payment> {
     const filters = this.handleFilters(filter);
     return this.http.get(this.basePath + `/payments${filters}`, HTTP_OPTIONS).pipe(
       map((res: any) => this.handleResults(res)),
@@ -50,7 +51,7 @@ export class ApiService {
     return response.result ? response.result : [];
   }
 
-  private handleFilters(filter?: Array<any>) {
+  private handleFilters(filter?: Array<ApiFilter>) {
     let params = '';
     if(filter && filter.length >= 1){ 
       filter.map((item, index) => {
